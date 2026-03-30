@@ -549,14 +549,54 @@ electronPNetScores = _electronPNetTags.clone(
 
 ################################################ electronParT#####################
 
-
-electronParTVariables = cms.EDProducer(
-    "ElectronTagInfoCollectionProducer",
-    src=cms.InputTag("linkedObjects", "electrons"),
-    secondary_vertices=cms.InputTag("slimmedSecondaryVertices"),
-    pvSrc=cms.InputTag("offlineSlimmedPrimaryVertices"),
-    pfCandidates=cms.InputTag("packedPFCandidates"),
-    leptonVars=cms.PSet(
+if run2_egamma:
+    ParTVariables_LeptonPSet = cms.PSet(
+        Lepton_pt_log=cms.string("log(pt+1.e-8)"),
+        Lepton_eta=cms.string("eta"),
+        Lepton_dxy=cms.string("dB('PV2D')"),
+        Lepton_dz=cms.string("dB('PVDZ')"),
+        Lepton_sip3d=cms.string("dB('PV3D')/max(1.e-6,edB('PV3D'))"),
+        Lepton_closeTrackNLayers=cms.string(
+            "closestCtfTrackNLayers()"),
+        Lepton_deltaetacltrkcalo=cms.string(
+            "deltaEtaSeedClusterTrackAtCalo"),
+        Lepton_dEtaInSeed=cms.string(
+            "deltaEtaSuperClusterTrackAtVtx()-superCluster().eta()+superCluster().seed().eta()"),
+        Lepton_hcaloverecal_log=cms.string(
+            "log(full5x5_hcalOverEcal()+1.e-8)"),
+        Lepton_r9full=cms.string("full5x5_r9()"),
+        Lepton_e1x5bye5x5=cms.string(
+            "1-full5x5_e1x5()/full5x5_e5x5()"),
+        Lepton_sigmaietaieta=cms.string("full5x5_sigmaIetaIeta()"),
+        Lepton_sigmaiphiiphi=cms.string("full5x5_sigmaIphiIphi()"),
+        Lepton_supcl_etaWidth=cms.string(
+            "superCluster().etaWidth()"),
+        Lepton_supcl_phiWidth=cms.string(
+            "superCluster().phiWidth()"),
+        Lepton_fbrem=cms.string("fbrem()"),
+        Lepton_eoverp_log=cms.string("log(eSuperClusterOverP()+1.e-8)"),
+        Lepton_passConversionVeto=cms.string("passConversionVeto()"),
+        Lepton_dr03HcalDepth1TowerSumEt_Rel=cms.string(
+            "?(pt()>0.)?(dr03HcalTowerSumEt(1)*1./pt()):-100"),
+        Lepton_jetNDauChargedMVASel=cms.string(
+            "?userCand('jetForLepJetVar').isNonnull()?userFloat('jetNDauChargedMVASel'):0"),
+        Lepton_miniRelIsoCharged_log=cms.string(
+            "log((userFloat('miniIsoChg_Fall17V2')/pt)+1.e-8)"),
+        Lepton_miniRelIsoNeutral_log=cms.string(
+            "log(((userFloat('miniIsoAll_Fall17V2')-userFloat('miniIsoChg_Fall17V2'))/pt)+1.e-8)"),
+        Lepton_pfRelIso03_all_log=cms.string(
+            "log((userFloat('PFIsoAll_Fall17V2')/pt)+1.e-8)"),
+        Lepton_jetPNet=cms.string(
+            "?userCand('jetForLepJetVar').isNonnull()?max(userCand('jetForLepJetVar').bDiscriminator('pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll'),0.0):0.0"),
+        Lepton_jetPtRelv2_log=cms.string(
+            "log((?userCand('jetForLepJetVar').isNonnull()?userFloat('ptRel'):0)+1.e-8)"),
+        Lepton_jetPtRatio=cms.string(
+            "?userCand('jetForLepJetVar').isNonnull()?min(userFloat('ptRatio'),1.5):1.0/(1.0+(pfIsolationVariables().sumChargedHadronPt + max(pfIsolationVariables().sumNeutralHadronEt + pfIsolationVariables().sumPhotonEt - pfIsolationVariables().sumPUPt/2,0.0))/pt)"),
+        Lepton_mvaId=cms.string(
+            "userFloat('mvaNoIso_Fall17V2')"),
+    )
+else:
+    ParTVariables_LeptonPSet = cms.PSet(
         Lepton_pt_log=cms.string("log(pt+1.e-8)"),
         Lepton_eta=cms.string("eta"),
         Lepton_dxy=cms.string("dB('PV2D')"),
@@ -599,8 +639,16 @@ electronParTVariables = cms.EDProducer(
         Lepton_jetPtRatio=cms.string(
             "?userCand('jetForLepJetVar').isNonnull()?min(userFloat('ptRatio'),1.5):1.0/(1.0+(pfIsolationVariables().sumChargedHadronPt + max(pfIsolationVariables().sumNeutralHadronEt + pfIsolationVariables().sumPhotonEt - pfIsolationVariables().sumPUPt/2,0.0))/pt)"),
         Lepton_mvaId=cms.string(
-            "userFloat('mvaNoIso')")
-    ),
+            "userFloat('mvaNoIso')"),
+    )
+
+electronParTVariables = cms.EDProducer(
+    "ElectronTagInfoCollectionProducer",
+    src=cms.InputTag("linkedObjects", "electrons"),
+    secondary_vertices=cms.InputTag("slimmedSecondaryVertices"),
+    pvSrc=cms.InputTag("offlineSlimmedPrimaryVertices"),
+    pfCandidates=cms.InputTag("packedPFCandidates"),
+    leptonVars=ParTVariables_LeptonPSet,
     leptonVarsExt=cms.PSet(
         lepton_mvaFall17V2noIso=cms.InputTag("electronPROMPTMVA")
     ),
