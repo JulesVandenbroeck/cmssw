@@ -472,11 +472,12 @@ electronPNetVariables = _electronTagInfos.clone(
         ElectronSelected_eInvMinusPInv=cms.string(
             "(1-eSuperClusterOverP())/ecalEnergy()"),
         ElectronSelected_passConversionVeto=cms.string("passConversionVeto()"),
-        ElectronSelected_minisoch=cms.string("userFloat('miniIsoChg')/pt"),
+        ElectronSelected_minisoch=cms.string(
+            "userFloat('miniIsoChg_Fall17V2')/pt"),
         ElectronSelected_minisonh=cms.string(
-            "(userFloat('miniIsoAll')-userFloat('miniIsoChg'))/pt"),
+            "(userFloat('miniIsoAll_Fall17V2')-userFloat('miniIsoChg_Fall17V2'))/pt"),
         ElectronSelected_pfRelIso03_drcor=cms.string(
-            "userFloat('PFIsoAll')/pt"),
+            "userFloat('PFIsoAll_Fall17V2')/pt"),
         ElectronSelected_jetNDauCharged=cms.string(
             "?userCand('jetForLepJetVar').isNonnull()?userFloat('jetNDauChargedMVASel'):0"),
         ElectronSelected_jetbtag=cms.string(
@@ -549,7 +550,7 @@ electronPNetScores = _electronPNetTags.clone(
 
 ################################################ electronParT#####################
 
-if run2_egamma:
+if True:
     ParTVariables_LeptonPSet = cms.PSet(
         Lepton_pt_log=cms.string("log(pt+1.e-8)"),
         Lepton_eta=cms.string("eta"),
